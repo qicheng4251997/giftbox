@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pick Your Gift Box</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap">
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#0a0c14;--ink:#f6f0e8;--muted:#a09cb2;--gold:#e6c9a0;--gold2:#b98a5e;--em:#e6c9a0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Outfit,-apple-system,"Helvetica Neue",Arial,sans-serif;
+background:radial-gradient(70% 45% at 50% 0,#232853 0,transparent 70%),radial-gradient(rgba(230,201,160,.07) 1px,transparent 1px) 0 0/22px 22px,var(--bg);
+display:flex;flex-direction:column;align-items:center;padding:34px 16px 28px;overflow-x:hidden}
+.sw{display:flex;gap:8px;margin-bottom:18px}.sw button{font:inherit;font-size:12px;color:var(--muted);background:none;border:1px solid rgba(230,201,160,.25);border-radius:99px;padding:6px 14px;cursor:pointer}.sw button.on{color:#1a1305;background:var(--gold);border-color:var(--gold)}
+.pill{font-size:12px;font-weight:600;letter-spacing:.25em;color:var(--gold);border:1px solid rgba(230,201,160,.4);padding:8px 18px;border-radius:99px;background:rgba(230,201,160,.06)}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(34px,10vw,58px);line-height:1.05;margin:18px 0 10px;text-align:center}
+h1 em{display:block;background:linear-gradient(90deg,#fff1dc,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin:0 0 26px;text-align:center;font-size:15px;max-width:34ch}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(420px,100%)}
+@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr);width:min(640px,100%);gap:18px}}
+.box{background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.01));border:1px solid rgba(230,201,160,.22);border-radius:22px;
+padding:14px 8px 12px;color:inherit;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;
+animation:float 3.4s ease-in-out infinite;animation-delay:calc(var(--i)*.35s);transition:border-color .25s,box-shadow .25s}
+.box:hover{border-color:var(--gold);box-shadow:0 10px 36px rgba(230,201,160,.18)}
+.box:active{transform:scale(.96)}
+@keyframes float{50%{transform:translateY(-6px)}}
+.box svg{width:min(104px,70%);height:auto;overflow:visible}
+.lid{transform-origin:14px 46px;transition:transform .6s cubic-bezier(.3,1.6,.5,1)}
+.glow{opacity:0;transition:opacity .5s .1s}
+.box:hover .lid{transform:rotate(-4deg) translateY(-2px)}
+.box.open{animation:none;border-color:var(--em)}
+.box.open .lid{transform:translate(8px,-26px) rotate(-16deg)}
+.box.open .glow{opacity:1}
+.lb{font-weight:800;letter-spacing:.14em;font-size:12px;color:var(--gold)}
+.tz{font-size:12px;color:var(--muted)}
+.hint{margin:24px 0 6px;color:var(--muted);font-size:14px}
+.fine{font-size:11px;color:#6f6c85}
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,6,5,.78);backdrop-filter:blur(6px)}
+.modal.show{display:flex}
+.card{position:relative;width:min(380px,100%);text-align:center;padding:48px 24px 22px;border-radius:26px;border:1.5px solid var(--gold);
+background:linear-gradient(170deg,#171a33,#0a0c14);box-shadow:0 0 60px rgba(230,201,160,.25);animation:in .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes in{from{transform:scale(.6);opacity:0}}
+.badge{position:absolute;left:50%;top:-34px;transform:translateX(-50%);width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-size:32px;background:#0a0c14;border:2px solid var(--gold)}
+.x{position:absolute;right:12px;top:10px;background:none;border:0;color:var(--muted);font-size:26px;cursor:pointer}
+.cg{margin:0;font-size:22px;font-weight:800}
+.you{margin:12px 0 2px;letter-spacing:.3em;font-size:12px;color:var(--muted)}
+.rw{margin:0;font-family:"Playfair Display",Georgia,serif;font-size:clamp(30px,9vw,40px);line-height:1.1;background:linear-gradient(180deg,#fff1dc,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.note{color:var(--muted);font-size:13px;margin:10px 0 16px}
+.timer{border:1px solid rgba(230,201,160,.3);border-radius:14px;padding:11px;font-size:14px;margin-bottom:16px}
+.timer b{color:#ff7d7d;font-family:ui-monospace,Menlo,monospace;font-size:17px;margin-left:4px}
+.cta{display:block;padding:17px 12px;border-radius:99px;text-decoration:none;color:#1a1305;font-weight:800;font-size:clamp(15px,4.4vw,17px);
+background:linear-gradient(90deg,#f4dcb8,var(--gold2));box-shadow:0 0 26px rgba(230,201,160,.4);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.03);box-shadow:0 0 44px rgba(230,201,160,.7)}}
+.card small{display:block;margin-top:12px;font-size:11px;color:#6f6c85}
+#cv{position:fixed;inset:0;width:100%;height:100%;z-index:60;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.box,.cta{animation:none}}
+</style>
+</head>
+<body>
+<div class="sw" id="sw"></div>
+<div class="pill">✦ WELCOME GIFT</div>
+<h1>Pick Your<em>Gift Box</em></h1>
+<p class="sub">Choose any gift box below to reveal your exclusive welcome bonus.</p>
+<div class="grid" id="grid"></div>
+<p class="hint">👆 Tap any gift box to reveal your reward</p>
+<div class="fine">18+ · Terms &amp; conditions apply</div>
+
+<div class="modal" id="modal">
+ <div class="card">
+  <button class="x" id="close" aria-label="Close">×</button>
+  <div class="badge">🎉</div>
+  <p class="cg">Congratulations!</p>
+  <p class="you">YOU GET</p>
+  <h2 class="rw" id="rw"></h2>
+  <p class="note" id="note"></p>
+  <div class="timer">⏳ This offer expires in <b id="tm">09:59</b></div>
+  <a class="cta" id="cta" href="#">Claim Exclusive Reward Now</a>
+  <small>Limited time offer · Terms &amp; conditions apply · 18+</small>
+ </div>
+</div>
+<canvas id="cv"></canvas>
+
+<script>
+// ===== 可修改配置:每个礼物盒的信息 / 跳转链接 =====
+var LINK="https://www.ipay9myr.store/?aff=nsads3";
+var BOXES=[
+ {tag:"Welcome Gift",reward:"120% Welcome Bonus",note:"For new members on first deposit."},
+ {tag:"Lucky Star",reward:"Free 100 Credits",note:"Instant credit after sign up."},
+ {tag:"VIP Treat",reward:"RM88 Cash Voucher",note:"Use it on your first play."},
+ {tag:"Diamond Drop",reward:"150% First Deposit Bonus",note:"Bigger bonus on your first top-up."},
+ {tag:"Magic Surprise",reward:"RM188 Mystery Bonus",note:"A special surprise just for you."},
+ {tag:"Gold Rush",reward:"200% Welcome Bonus",note:"Our biggest welcome offer."}
+];
+var SWITCHER=false,STYLE=1; // SWITCHER=true 时页面顶部显示 A/B/C 款式切换,选好后改成 false;STYLE: 0=A 1=B 2=C
+var INNER=[
+'<rect x="18" y="56" width="84" height="54" rx="7" fill="rgba(230,201,160,.05)"/><path d="M60 56v54"/><g class="lid"><rect x="12" y="38" width="96" height="18" rx="6" fill="#12152a"/><path d="M60 38v18"/><path d="M60 38C52 16 30 16 36 31c3 7 17 7 24 7zM60 38c8-22 30-22 24-7-3 7-17 7-24 7z"/></g>',
+'<rect x="18" y="56" width="84" height="54" rx="7" fill="url(#fb)" stroke-width="1.6"/><rect x="54" y="56" width="12" height="54" fill="url(#gg)" stroke="none"/><g class="lid"><rect x="12" y="38" width="96" height="18" rx="6" fill="url(#fb)" stroke-width="1.6"/><rect x="54" y="38" width="12" height="18" fill="url(#gg)" stroke="none"/><path d="M60 38C52 14 28 16 35 31c3 7 17 7 25 7zM60 38c8-24 32-22 25-7-3 7-17 7-25 7z" fill="url(#gg)" stroke="none"/><circle cx="60" cy="38" r="5" fill="#fff1dc" stroke="none"/></g>',
+'<rect x="22" y="52" width="76" height="58" rx="10" fill="rgba(230,201,160,.04)"/><rect x="28" y="58" width="64" height="46" rx="7" stroke-opacity=".4" stroke-width="1.4"/><path d="M54 52v58M66 52v58" stroke-width="1.8"/><path d="M60 72l3.5 8 8 3.5-8 3.5-3.5 8-3.5-8-8-3.5 8-3.5z" fill="url(#gg)" stroke="none"/><g class="lid"><rect x="16" y="36" width="88" height="16" rx="8" fill="#12152a"/><path d="M54 36v16M66 36v16" stroke-width="1.8"/><path d="M60 36c-6-14-24-14-20-4 2 5 12 4 20 4zM60 36c6-14 24-14 20-4-2 5-12 4-20 4z"/></g>'];
+function svg(){return '<svg viewBox="0 0 120 120" fill="none" stroke="url(#gg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><ellipse class="glow" cx="60" cy="56" rx="38" ry="9" fill="rgba(230,201,160,.3)" stroke="none"/>'+INNER[STYLE]+'</svg>'}
+var grid=document.getElementById("grid");
+grid.insertAdjacentHTML("beforebegin",'<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1dc"/><stop offset="1" stop-color="#b98a5e"/></linearGradient><linearGradient id="fb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(230,201,160,.28)"/><stop offset="1" stop-color="rgba(230,201,160,.04)"/></linearGradient></defs></svg>');
+function render(){grid.innerHTML="";BOXES.forEach(function(b,i){
+ var el=document.createElement("button");el.className="box";el.style.setProperty("--i",i);
+ el.innerHTML=svg()+'<span class="lb">GIFT 0'+(i+1)+'</span><span class="tz">'+b.tag+'</span>';
+ el.onclick=function(){open(el,b)};grid.appendChild(el);});}
+var sw=document.getElementById("sw");
+if(SWITCHER){["Style A","Style B","Style C"].forEach(function(n,i){var c=document.createElement("button");c.textContent=n;c.className=i==STYLE?"on":"";
+ c.onclick=function(){STYLE=i;[].forEach.call(sw.children,function(x,j){x.className=j==i?"on":""});render()};sw.appendChild(c)})}else sw.style.display="none";
+render();
+var modal=document.getElementById("modal"),timer,busy=false;
+document.getElementById("cta").href=LINK;
+function open(el,b){
+ if(busy)return;busy=true;el.classList.add("open");
+ setTimeout(function(){
+  document.getElementById("rw").textContent=b.reward;document.getElementById("note").textContent=b.note;
+  modal.classList.add("show");countdown();confetti();busy=false;
+ },el.classList.contains("open")&&el.dataset.done?0:650);
+ el.dataset.done=1;
+}
+function countdown(){clearInterval(timer);var s=599,t=document.getElementById("tm");
+ function f(){t.textContent=("0"+Math.floor(s/60)).slice(-2)+":"+("0"+s%60).slice(-2);if(s>0)s--}
+ f();timer=setInterval(f,1000)}
+function hide(){modal.classList.remove("show");clearInterval(timer)}
+document.getElementById("close").onclick=hide;
+modal.onclick=function(e){if(e.target===modal)hide()};
+// 彩带
+var cv=document.getElementById("cv"),cx=cv.getContext("2d"),P=[],run=false;
+function confetti(){
+ if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+ var w=cv.width=innerWidth,h=cv.height=innerHeight,C=["#e6c9a0","#fff1dc","#b98a5e","#ffffff","#c9b8ff"];
+ [[.5,.45,0],[0,.75,.6],[1,.75,-.6]].forEach(function(o){
+  for(var i=0;i<70;i++){var a=-Math.PI/2+o[2]+(Math.random()-.5)*1.5,v=9+Math.random()*10;
+   P.push({x:o[0]*w,y:o[1]*h,vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:5+Math.random()*6,c:C[i%5],r:Math.random()*6,vr:(Math.random()-.5)*.4})}});
+ if(!run){run=true;requestAnimationFrame(step)}
+}
+function step(){
+ cx.clearRect(0,0,cv.width,cv.height);
+ P=P.filter(function(p){return p.y<cv.height+20});
+ P.forEach(function(p){p.vy+=.3;p.vx*=.985;p.vy*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+  cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});
+ if(P.length)requestAnimationFrame(step);else run=false;
+}
+</script>
+</body>
+</html>
